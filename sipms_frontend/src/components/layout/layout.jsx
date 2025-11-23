@@ -402,7 +402,7 @@ const Layout = ({ activePage, onPageChange }) => {
                                             <p className="text-xs text-blue-600 font-medium">{userData?.role}</p>
                                         </div>
                                         <div className="py-1">
-                                            <button
+                                            {/* <button
                                                 onClick={() => {
                                                     setDropdownOpen(false);
                                                     navigate('/dashboard/users/profile');
@@ -411,19 +411,8 @@ const Layout = ({ activePage, onPageChange }) => {
                                             >
                                                 <User className="w-4 h-4 mr-3" />
                                                 Account Settings
-                                            </button>
-                                            {userData?.role === "MEMBER" && (
-                                                <button
-                                                    onClick={() => {
-                                                        setDropdownOpen(false);
-                                                        navigate('/dashboard/members/profile');
-                                                    }}
-                                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
-                                                >
-                                                    <User className="w-4 h-4 mr-3" />
-                                                    Profile Settings
-                                                </button>
-                                            )}
+                                            </button> */}
+
                                         </div>
                                         <div className="border-t border-gray-100 py-1">
                                             <button
