@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Loader2, Eye, Bell, Shield, Calendar, MessageSquare, X } from "lucide-react";
-import { notificationService } from '../../api';
+import { notificationService, getCurrentUser } from '../../api';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function NotificationList() {
@@ -8,6 +8,7 @@ export default function NotificationList() {
     const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [selectedNotification, setSelectedNotification] = useState(null);
+
 
     useEffect(() => {
         fetchNotifications();
@@ -17,8 +18,15 @@ export default function NotificationList() {
         setIsLoading(true);
         try {
             const result = await notificationService.getAllNotifications();
+
             if (result.success) {
-                setNotifications(result.data);
+                const user = getCurrentUser();
+                const role = user?.role?.toUpperCase();
+                const filteredData = result.data.filter(
+                    (notification) => notification.role?.toUpperCase() === role || notification.sender?.toUpperCase() === role
+                );
+
+                setNotifications(filteredData);
             }
         } catch (error) {
             console.error("Error fetching notifications:", error);
@@ -26,6 +34,7 @@ export default function NotificationList() {
             setIsLoading(false);
         }
     };
+
 
     const handleOpenModal = (notification) => {
         setSelectedNotification(notification);
@@ -126,7 +135,8 @@ export default function NotificationList() {
                             <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
                                 <tr>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">#</th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Role</th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">FROM </th>
+                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">TO</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Message</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Created At</th>
                                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
@@ -160,16 +170,30 @@ export default function NotificationList() {
                                             <td className="px-6 py-4 text-sm font-medium text-gray-900">{index + 1}</td>
                                             <td className="px-6 py-4">
                                                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getRoleBadgeColor(notification.role)}`}>
+                                                    {notification.sender}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${getRoleBadgeColor(notification.role)}`}>
                                                     {notification.role}
                                                 </span>
                                             </td>
+
                                             <td className="px-6 py-4 text-sm text-gray-900">{truncateMessage(notification.message)}</td>
                                             <td className="px-6 py-4 text-sm text-gray-600">
                                                 <div className="flex items-center gap-2">
                                                     <Calendar className="w-4 h-4 text-gray-400" />
-                                                    <span>{new Date(notification.created_at).toLocaleDateString()}</span>
+
+                                                    <span>
+                                                        {new Date(notification.created_at).toLocaleDateString()}{" "}
+                                                        {new Date(notification.created_at).toLocaleTimeString([], {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        })}
+                                                    </span>
                                                 </div>
                                             </td>
+
                                             <td className="px-6 py-4 text-sm">
                                                 <button
                                                     onClick={() => handleOpenModal(notification)}

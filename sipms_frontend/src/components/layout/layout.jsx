@@ -126,7 +126,7 @@ const Layout = ({ activePage, onPageChange }) => {
             name: "Notifications",
             icon: <Bell className="w-5 h-5" />,
             path: "/main/notification/list",
-            roles: ["admin", "district"],
+            roles: ["admin", "district", "umurenge", "mineduc"],
         },
     ];
 
@@ -402,16 +402,27 @@ const Layout = ({ activePage, onPageChange }) => {
                                             <p className="text-xs text-blue-600 font-medium">{userData?.role}</p>
                                         </div>
                                         <div className="py-1">
-                                            {/* <button
+                                            <button
                                                 onClick={() => {
                                                     setDropdownOpen(false);
-                                                    navigate('/dashboard/users/profile');
+                                                    navigate('/main/users/views/profile');
                                                 }}
                                                 className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
                                             >
                                                 <User className="w-4 h-4 mr-3" />
-                                                Account Settings
-                                            </button> */}
+                                                User Profile
+                                            </button>
+
+                                            <button
+                                                onClick={() => {
+                                                    setDropdownOpen(false);
+                                                    navigate('/main/users/profile');
+                                                }}
+                                                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                                            >
+                                                <User className="w-4 h-4 mr-3" />
+                                                Update Profile
+                                            </button>
 
                                         </div>
                                         <div className="border-t border-gray-100 py-1">

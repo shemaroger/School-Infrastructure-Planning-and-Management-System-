@@ -119,7 +119,8 @@ export default function PredictionManagement() {
         try {
             const payload = {
                 role: "DISTRICT",
-                message: notificationMessage
+                message: notificationMessage,
+                sender: userdata.role
             };
             const response = await notificationService.sendNotification(payload);
             if (response.success) {
@@ -233,9 +234,15 @@ export default function PredictionManagement() {
                                     <Plus className="w-5 h-5" />
                                     <span>New Predictions</span>
                                 </a>
+                                <a
+                                    href="/main/notification/send"
+                                    className="bg-gradient-to-r from-green-900 to-green-900 hover:from-green-700 hover:to-green-800 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
+                                >
+                                    <Send className="w-5 h-5" />
+                                    <span>Send Notification</span>
+                                </a>
                             </div>
                         )}
-
 
                     </div>
                 </div>

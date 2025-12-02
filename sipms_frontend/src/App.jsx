@@ -21,6 +21,10 @@ import AdminDashboard from './components/Dashboard/AdminDashboard';
 import DistrictDashboard from './components/Dashboard/DistrictDashboard';
 import UmurengeDashboard from './components/Dashboard/UmurengeDashboard';
 
+import Userprofile from './components/User/Userprofile';
+import ViewUser from './components/User/ViewUser';
+import SendNotification from './components/Notification/SendNotification';
+
 function App() {
   return (
     <>
@@ -36,6 +40,7 @@ function App() {
           <Route path="predictions/list" element={<PredictionList />} />
           <Route path="predictions/district/add" element={<PredictionLocation />} />
           <Route path="notification/list" element={<NotificationList />} />
+          <Route path="notification/send" element={<SendNotification />} />
           <Route path="school/prictions/list" element={<SchoolPredictions />} />
           <Route path="predictions/doc" element={<PredictionReports />} />
           <Route path="predictions/mineduc" element={<PredictionReportsByLocation />} />
@@ -44,6 +49,12 @@ function App() {
           <Route path="admindashboard" element={<AdminDashboard />} />
           <Route path="districtdashboard" element={<DistrictDashboard />} />
           <Route path="umurengedashboard" element={<UmurengeDashboard />} />
+
+
+          <Route path="users/profile" element={<Userprofile />} />
+          <Route path="users/views/profile" element={<ViewUser />} />
+
+
 
 
 
