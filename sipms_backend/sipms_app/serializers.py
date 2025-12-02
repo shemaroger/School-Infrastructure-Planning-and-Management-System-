@@ -16,6 +16,7 @@ class SchoolSerializer(serializers.ModelSerializer):
             field.required = False
             field.allow_null = True
             field.allow_blank = True
+            
 class UserSerializer(serializers.ModelSerializer):
     school = SchoolSerializer(read_only=True)
     school_id = serializers.PrimaryKeyRelatedField(
@@ -35,14 +36,24 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "role",
             "school",
-            'sector',
+            "sector",
             "school_id",
+            "password",
         ]
+        extra_kwargs = {
+            "password": {"write_only": True, "required": False}
+        }
 
     def update(self, instance, validated_data):
         school = validated_data.pop("school_id", None)
         if school:
             instance.school = school
+
+        # Save password correctly
+        password = validated_data.pop("password", None)
+        if password:
+            instance.set_password(password)
+
         return super().update(instance, validated_data)
 
 class UserLoginSerializer(serializers.Serializer):
@@ -93,7 +104,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             school=school,
         )
 
-        password = validated_data.get("password")
+        password = validated_data["password"]
         if password:
             user.set_password(password)
         else:

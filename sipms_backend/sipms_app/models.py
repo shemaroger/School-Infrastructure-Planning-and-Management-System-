@@ -124,6 +124,7 @@ class Notification(models.Model):
         ADMIN = "ADMIN", _("Admin")
 
     role = models.CharField(max_length=20, choices=Role.choices)
+    sender = models.CharField(max_length=20, choices=Role.choices)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
