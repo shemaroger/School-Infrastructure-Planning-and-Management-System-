@@ -33,7 +33,6 @@ export default function EditUserPage() {
         sector: ''
     });
 
-    // Password strength checker
     const checkPasswordStrength = (password) => {
         const requirements = [
             { label: 'At least 8 characters', met: password.length >= 8 },
@@ -85,7 +84,6 @@ export default function EditUserPage() {
         fetchUser();
     }, [id]);
 
-    // Update password strength when password changes
     useEffect(() => {
         if (formData.password) {
             setPasswordStrength(checkPasswordStrength(formData.password));
@@ -152,7 +150,6 @@ export default function EditUserPage() {
                 return;
             }
 
-            // Check for strong password (at least score 3)
             if (passwordStrength.score < 3) {
                 toast.error("Please use a stronger password. It should include uppercase, lowercase, numbers, and special characters.");
                 return;
@@ -301,7 +298,6 @@ export default function EditUserPage() {
                                     />
                                 </div>
 
-                                {/* Password Field with Strength Indicator */}
                                 <div className="space-y-2 md:col-span-2">
                                     <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
                                         <Lock className="w-4 h-4 text-gray-500" />
@@ -326,10 +322,8 @@ export default function EditUserPage() {
                                         </button>
                                     </div>
 
-                                    {/* Password Strength Indicator */}
                                     {formData.password && (
                                         <div className="mt-3 space-y-3">
-                                            {/* Strength Bar */}
                                             <div className="space-y-2">
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-sm font-medium text-gray-600">Password Strength:</span>
@@ -355,7 +349,6 @@ export default function EditUserPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Requirements Checklist */}
                                             <div className="bg-gray-50 rounded-xl p-4">
                                                 <p className="text-sm font-medium text-gray-700 mb-3">Password Requirements:</p>
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -379,7 +372,6 @@ export default function EditUserPage() {
                                                 </div>
                                             </div>
 
-                                            {/* Warning for weak passwords */}
                                             {passwordStrength.score > 0 && passwordStrength.score < 3 && (
                                                 <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
                                                     <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
@@ -389,7 +381,6 @@ export default function EditUserPage() {
                                                 </div>
                                             )}
 
-                                            {/* Success message for strong passwords */}
                                             {passwordStrength.score >= 4 && (
                                                 <div className="flex items-start gap-2 p-3 bg-green-50 border border-green-200 rounded-xl">
                                                     <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
@@ -405,8 +396,6 @@ export default function EditUserPage() {
                                         <p className="text-xs text-gray-500">Leave blank to keep current password</p>
                                     )}
                                 </div>
-
-                                {/* Confirm Password Field */}
                                 <div className="space-y-2 md:col-span-2">
                                     <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
                                         <Lock className="w-4 h-4 text-gray-500" />
@@ -436,7 +425,6 @@ export default function EditUserPage() {
                                         </button>
                                     </div>
 
-                                    {/* Password Match Indicator */}
                                     {formData.confirm_password && (
                                         <div className={`flex items-center gap-2 text-sm ${formData.password === formData.confirm_password
                                             ? 'text-green-600'
@@ -570,8 +558,6 @@ export default function EditUserPage() {
                         </div>
                     </form>
                 </div>
-
-                {/* Help Text */}
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-500">
                         Need to change role, location, or school? Contact your system administrator.
