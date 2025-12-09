@@ -159,3 +159,26 @@ class PredictionReport(models.Model):
     
     def __str__(self):
         return f"Report for {self.location} - {self.created_at.strftime('%Y-%m-%d')}"
+
+
+class ActionLog(models.Model):
+    ACTION_CHOICES = [
+        ('CREATE', 'Create'),
+        ('UPDATE', 'Update'),
+        ('DELETE', 'Delete'),
+        ('SEND', 'Send'),
+        ('APPROVE', 'Approve'),
+        ('DENY', 'Deny'),
+        ('UPLOAD', 'Upload'),
+        ('OTHER', 'Other'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    model_name = models.CharField(max_length=100) 
+    object_id = models.PositiveIntegerField(null=True, blank=True) 
+    details = models.JSONField(null=True, blank=True) 
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} {self.action} {self.model_name} {self.object_id} at {self.timestamp}"

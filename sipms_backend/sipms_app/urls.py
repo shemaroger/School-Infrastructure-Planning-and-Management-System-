@@ -28,6 +28,7 @@ urlpatterns = [
     path('send-to-mineduc/<int:report_id>/', send_to_mineduc, name='send-to-mineduc'),
     path("prediction-reports/mineduc/approve/<int:id>/", approve_report),
     path("prediction-reports/mineduc/deny/<int:id>/", deny_report),
+     path('action-logs/', ActionLogListView.as_view(), name='action-logs'),
 
 ]
 

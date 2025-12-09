@@ -181,3 +181,11 @@ class PredictionReportCreateSerializer(serializers.ModelSerializer):
         if value.size > 10 * 1024 * 1024:
             raise serializers.ValidationError("File size cannot exceed 10MB")
         return value
+    
+
+
+class ActionLogSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = ActionLog
+        fields = '__all__'
