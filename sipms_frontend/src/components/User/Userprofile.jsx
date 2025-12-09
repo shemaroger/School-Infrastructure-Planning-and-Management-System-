@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { USER_ROLES, getRoleLabel } from '../../constants/roles';
 import { parseLocation } from '../../constants/locations';
 import { userService, schoolService, getCurrentUser } from '../../api';
-import { ArrowLeft, Save, X, User, Mail, Shield, MapPin, Building2, AlertCircle, Edit3, Loader, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Save, X, User, Mail, Shield, MapPin, Building2, AlertCircle, Edit3, Loader, Lock, Eye, EyeOff, Check } from 'lucide-react';
 
 export default function EditUserPage() {
     const navigate = useNavigate();
@@ -16,6 +16,7 @@ export default function EditUserPage() {
     const [isMyProfile, setIsMyProfile] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: '', color: '', requirements: [] });
     const storedUserData = getCurrentUser();
     const id = storedUserData.id;
 
@@ -32,6 +33,49 @@ export default function EditUserPage() {
         sector: ''
     });
 
+    // Password strength checker
+    const checkPasswordStrength = (password) => {
+        const requirements = [
+            { label: 'At least 8 characters', met: password.length >= 8 },
+            { label: 'Contains uppercase letter', met: /[A-Z]/.test(password) },
+            { label: 'Contains lowercase letter', met: /[a-z]/.test(password) },
+            { label: 'Contains number', met: /[0-9]/.test(password) },
+            { label: 'Contains special character (!@#$%^&*)', met: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
+        ];
+
+        const metCount = requirements.filter(r => r.met).length;
+
+        let score, label, color;
+
+        if (password.length === 0) {
+            score = 0;
+            label = '';
+            color = 'bg-gray-200';
+        } else if (metCount <= 1) {
+            score = 1;
+            label = 'Very Weak';
+            color = 'bg-red-500';
+        } else if (metCount === 2) {
+            score = 2;
+            label = 'Weak';
+            color = 'bg-orange-500';
+        } else if (metCount === 3) {
+            score = 3;
+            label = 'Fair';
+            color = 'bg-yellow-500';
+        } else if (metCount === 4) {
+            score = 4;
+            label = 'Strong';
+            color = 'bg-blue-500';
+        } else {
+            score = 5;
+            label = 'Very Strong';
+            color = 'bg-green-500';
+        }
+
+        return { score, label, color, requirements };
+    };
+
     useEffect(() => {
         if (storedUserData.id) {
             setIsMyProfile(true);
@@ -40,6 +84,15 @@ export default function EditUserPage() {
         fetchSchools();
         fetchUser();
     }, [id]);
+
+    // Update password strength when password changes
+    useEffect(() => {
+        if (formData.password) {
+            setPasswordStrength(checkPasswordStrength(formData.password));
+        } else {
+            setPasswordStrength({ score: 0, label: '', color: 'bg-gray-200', requirements: [] });
+        }
+    }, [formData.password]);
 
     const fetchSchools = async () => {
         try {
@@ -98,8 +151,10 @@ export default function EditUserPage() {
                 toast.error("Passwords do not match");
                 return;
             }
-            if (formData.password.length < 6) {
-                toast.error("Password must be at least 6 characters long");
+
+            // Check for strong password (at least score 3)
+            if (passwordStrength.score < 3) {
+                toast.error("Please use a stronger password. It should include uppercase, lowercase, numbers, and special characters.");
                 return;
             }
         }
@@ -246,7 +301,8 @@ export default function EditUserPage() {
                                     />
                                 </div>
 
-                                <div className="space-y-2">
+                                {/* Password Field with Strength Indicator */}
+                                <div className="space-y-2 md:col-span-2">
                                     <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
                                         <Lock className="w-4 h-4 text-gray-500" />
                                         New Password
@@ -269,10 +325,89 @@ export default function EditUserPage() {
                                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                         </button>
                                     </div>
-                                    <p className="text-xs text-gray-500">Leave blank to keep current password</p>
+
+                                    {/* Password Strength Indicator */}
+                                    {formData.password && (
+                                        <div className="mt-3 space-y-3">
+                                            {/* Strength Bar */}
+                                            <div className="space-y-2">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-sm font-medium text-gray-600">Password Strength:</span>
+                                                    <span className={`text-sm font-semibold ${passwordStrength.score <= 1 ? 'text-red-600' :
+                                                        passwordStrength.score === 2 ? 'text-orange-600' :
+                                                            passwordStrength.score === 3 ? 'text-yellow-600' :
+                                                                passwordStrength.score === 4 ? 'text-blue-600' :
+                                                                    'text-green-600'
+                                                        }`}>
+                                                        {passwordStrength.label}
+                                                    </span>
+                                                </div>
+                                                <div className="flex gap-1">
+                                                    {[1, 2, 3, 4, 5].map((level) => (
+                                                        <div
+                                                            key={level}
+                                                            className={`h-2 flex-1 rounded-full transition-all duration-300 ${level <= passwordStrength.score
+                                                                ? passwordStrength.color
+                                                                : 'bg-gray-200'
+                                                                }`}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Requirements Checklist */}
+                                            <div className="bg-gray-50 rounded-xl p-4">
+                                                <p className="text-sm font-medium text-gray-700 mb-3">Password Requirements:</p>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                    {passwordStrength.requirements.map((req, index) => (
+                                                        <div
+                                                            key={index}
+                                                            className={`flex items-center gap-2 text-sm transition-colors ${req.met ? 'text-green-600' : 'text-gray-500'
+                                                                }`}
+                                                        >
+                                                            <div className={`w-5 h-5 rounded-full flex items-center justify-center ${req.met ? 'bg-green-100' : 'bg-gray-200'
+                                                                }`}>
+                                                                {req.met ? (
+                                                                    <Check className="w-3 h-3" />
+                                                                ) : (
+                                                                    <div className="w-2 h-2 bg-gray-400 rounded-full" />
+                                                                )}
+                                                            </div>
+                                                            <span>{req.label}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Warning for weak passwords */}
+                                            {passwordStrength.score > 0 && passwordStrength.score < 3 && (
+                                                <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
+                                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                                                    <p className="text-sm text-red-700">
+                                                        Your password is too weak. Please add more variety including uppercase letters, numbers, and special characters.
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {/* Success message for strong passwords */}
+                                            {passwordStrength.score >= 4 && (
+                                                <div className="flex items-start gap-2 p-3 bg-green-50 border border-green-200 rounded-xl">
+                                                    <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                                                    <p className="text-sm text-green-700">
+                                                        Great! Your password is strong and secure.
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {!formData.password && (
+                                        <p className="text-xs text-gray-500">Leave blank to keep current password</p>
+                                    )}
                                 </div>
 
-                                <div className="space-y-2">
+                                {/* Confirm Password Field */}
+                                <div className="space-y-2 md:col-span-2">
                                     <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
                                         <Lock className="w-4 h-4 text-gray-500" />
                                         Confirm Password
@@ -285,7 +420,12 @@ export default function EditUserPage() {
                                             onChange={handleInputChange}
                                             placeholder="Confirm new password"
                                             disabled={isLoading}
-                                            className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                                            className={`w-full px-4 py-3 pr-12 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all disabled:bg-gray-50 disabled:cursor-not-allowed ${formData.confirm_password && formData.password !== formData.confirm_password
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
+                                                : formData.confirm_password && formData.password === formData.confirm_password
+                                                    ? 'border-green-300 focus:border-green-500 focus:ring-green-500'
+                                                    : 'border-gray-200 focus:border-blue-500'
+                                                }`}
                                         />
                                         <button
                                             type="button"
@@ -295,6 +435,26 @@ export default function EditUserPage() {
                                             {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                         </button>
                                     </div>
+
+                                    {/* Password Match Indicator */}
+                                    {formData.confirm_password && (
+                                        <div className={`flex items-center gap-2 text-sm ${formData.password === formData.confirm_password
+                                            ? 'text-green-600'
+                                            : 'text-red-600'
+                                            }`}>
+                                            {formData.password === formData.confirm_password ? (
+                                                <>
+                                                    <Check className="w-4 h-4" />
+                                                    <span>Passwords match</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <AlertCircle className="w-4 h-4" />
+                                                    <span>Passwords do not match</span>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -391,7 +551,7 @@ export default function EditUserPage() {
                                 </button>
                                 <button
                                     type="submit"
-                                    disabled={isLoading}
+                                    disabled={isLoading || (formData.password && passwordStrength.score < 3) || (formData.confirm_password && formData.password !== formData.confirm_password)}
                                     className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                                 >
                                     {isLoading ? (

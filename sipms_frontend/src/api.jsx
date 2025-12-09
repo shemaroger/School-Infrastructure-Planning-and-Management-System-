@@ -200,6 +200,19 @@ export const predictionService = {
     },
 };
 
+
+export const actionLogService = {
+    async getAllactionLogs() {
+        try {
+            const response = await api.get("/action-logs/");
+            return { success: true, data: response.data };
+        } catch (error) {
+            return handleError(error);
+        }
+    },
+
+};
+
 export const predictionReportService = {
 
     async create(location, pdfBlob, created_by) {

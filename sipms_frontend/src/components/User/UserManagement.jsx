@@ -222,29 +222,30 @@ export default function UserManagement() {
                                     </tr>
                                 ) : (
                                     currentUsers.map((user, index) => (
-                                        <tr key={user.id} className="hover:bg-blue-50/50 transition-colors">
-                                            <td className="px-6 py-4">{indexOfFirstUser + index + 1}</td>
-                                            <td className="px-6 py-4">
-                                                <p className="font-semibold">{user.username}</p>
-                                                <p className="text-xs text-gray-500">
+                                        <tr key={user.id} className="hover:bg-blue-50/50 transition-colors text-sm">
+
+                                            <td className="px-6 py-2">{indexOfFirstUser + index + 1}.</td>
+                                            <td className="px-6 py-2">
+
+                                                <p className="">
                                                     {user.first_name} {user.last_name}
                                                 </p>
                                             </td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-2">
                                                 <div className="flex items-center gap-2 ">
                                                     <Mail className="w-4 h-4  text-gray-400" />
                                                     {user.email}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4">{user.sector || '-'}</td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-2">{user.sector || '-'}</td>
+                                            <td className="px-6 py-2">
                                                 <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getRoleBadgeColor(user.role)}`}>
                                                     {getRoleLabel(user.role)}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4">{getSchoolName(user)}</td>
+                                            <td className="px-6 py-2">{getSchoolName(user)}</td>
 
-                                            <td className="px-6 py-4 relative">
+                                            <td className="px-6 py-2 relative">
                                                 <button
                                                     onClick={() => toggleDropdown(user.id)}
                                                     className="p-2 hover:bg-gray-100 rounded-lg"

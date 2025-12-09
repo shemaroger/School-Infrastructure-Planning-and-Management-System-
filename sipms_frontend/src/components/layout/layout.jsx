@@ -128,6 +128,13 @@ const Layout = ({ activePage, onPageChange }) => {
             path: "/main/notification/list",
             roles: ["admin", "district", "umurenge", "mineduc"],
         },
+
+        {
+            name: "Action Logs ",
+            icon: <Bell className="w-5 h-5" />,
+            path: "/main/action/logs",
+            roles: ["admin"],
+        },
     ];
 
     const getUserData = () => {

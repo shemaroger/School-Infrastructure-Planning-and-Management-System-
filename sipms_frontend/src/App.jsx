@@ -25,6 +25,8 @@ import Userprofile from './components/User/Userprofile';
 import ViewUser from './components/User/ViewUser';
 import SendNotification from './components/Notification/SendNotification';
 
+import ActionLogs from './components/ActionLogs/ActionLogs';
+
 function App() {
   return (
     <>
@@ -53,6 +55,8 @@ function App() {
 
           <Route path="users/profile" element={<Userprofile />} />
           <Route path="users/views/profile" element={<ViewUser />} />
+
+          <Route path="action/logs" element={<ActionLogs />} />
 
 
 
